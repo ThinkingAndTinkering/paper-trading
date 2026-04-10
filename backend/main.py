@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from models import init_db
-from routes import portfolio, trading, positions, snapshots, analytics
+from routes import portfolio, trading, positions, snapshots, analytics, data
 
 app = FastAPI(title="Paper Trading Portfolio")
 
@@ -23,6 +23,7 @@ app.include_router(trading.router, prefix="/api")
 app.include_router(positions.router, prefix="/api")
 app.include_router(snapshots.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")
+app.include_router(data.router, prefix="/api")
 
 
 @app.on_event("startup")

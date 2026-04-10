@@ -4,3 +4,4 @@ sqlalchemy
 yfinance
 pandas
 numpy
+python-multipart

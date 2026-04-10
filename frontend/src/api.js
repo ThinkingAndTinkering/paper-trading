@@ -63,3 +63,16 @@ export const getPerformance = (id) => request(`/performance/${id}`);
 export const getSectors = (id) => request(`/analytics/${id}/sectors`);
 export const getConcentration = (id) => request(`/analytics/${id}/concentration`);
 export const getRiskMetrics = (id) => request(`/analytics/${id}/risk`);
+
+// Data export/import
+export const exportData = () => request("/export");
+export const importData = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch(`${BASE}/import`, { method: "POST", body: formData });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail || "Import failed");
+  }
+  return res.json();
+};

@@ -6,6 +6,8 @@ import {
   deletePortfolio,
   resetPortfolio,
   renamePortfolio,
+  exportData,
+  importData,
 } from "./api";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
@@ -322,6 +324,39 @@ export default function App() {
   const [activePortfolio, setActivePortfolio] = useState(null);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleExport = async () => {
+    try {
+      const data = await exportData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `paper-trading-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert("Export failed: " + e.message);
+    }
+  };
+
+  const handleImport = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const result = await importData(file);
+      alert(`Imported ${result.imported} of ${result.total} portfolios.`);
+      const ps = await loadPortfolios();
+      if (ps.length > 0 && !activePortfolioId) {
+        setActivePortfolioId(ps[0].id);
+        refreshActive(ps[0].id);
+      }
+    } catch (e) {
+      alert("Import failed: " + e.message);
+    }
+    e.target.value = "";
+  };
 
   const loadPortfolios = useCallback(async () => {
     try {
@@ -534,6 +569,29 @@ export default function App() {
                   {p.label}
                 </button>
               ))}
+            </div>
+            <div className="ml-auto flex items-center gap-1">
+              <button
+                onClick={handleExport}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-gray-200"
+                title="Export all portfolios"
+              >
+                Export
+              </button>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-gray-200"
+                title="Import portfolios from JSON"
+              >
+                Import
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                className="hidden"
+              />
             </div>
           </div>
         </div>
