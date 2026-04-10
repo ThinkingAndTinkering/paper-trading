@@ -88,10 +88,15 @@ async def import_all(file: UploadFile = File(...)):
     imported = 0
     try:
         for pd in data["portfolios"]:
-            # Check if portfolio with same name already exists
+            # Replace existing portfolio with same name
             existing = session.query(Portfolio).filter_by(name=pd["name"]).first()
             if existing:
-                continue  # Skip duplicates
+                session.query(DailySnapshot).filter_by(portfolio_id=existing.id).delete()
+                session.query(CashTransaction).filter_by(portfolio_id=existing.id).delete()
+                session.query(Transaction).filter_by(portfolio_id=existing.id).delete()
+                session.query(Position).filter_by(portfolio_id=existing.id).delete()
+                session.delete(existing)
+                session.flush()
 
             p = Portfolio(
                 name=pd["name"],

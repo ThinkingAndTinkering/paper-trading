@@ -1,0 +1,274 @@
+{
+  "portfolios": [
+    {
+      "name": "Paper 1",
+      "cash_balance": 78668.27999999994,
+      "initial_deposit": 1000000.0,
+      "created_at": "2026-03-25T04:24:20.073839",
+      "positions": [
+        {
+          "ticker": "000660.KS",
+          "side": "long",
+          "shares": 74.0,
+          "cost_basis": 49567.420000000006,
+          "avg_price": 669.83,
+          "opened_at": "2026-03-25T05:17:18.834431"
+        },
+        {
+          "ticker": "CSU.TO",
+          "side": "long",
+          "shares": 30.0,
+          "cost_basis": 53173.5,
+          "avg_price": 1772.45,
+          "opened_at": "2026-03-25T05:16:48.006310"
+        },
+        {
+          "ticker": "CVNA",
+          "side": "long",
+          "shares": 250.0,
+          "cost_basis": 75242.5,
+          "avg_price": 300.97,
+          "opened_at": "2026-03-25T05:16:31.263601"
+        },
+        {
+          "ticker": "MA",
+          "side": "long",
+          "shares": 100.0,
+          "cost_basis": 50357.0,
+          "avg_price": 503.57,
+          "opened_at": "2026-04-10T00:18:58.264151"
+        },
+        {
+          "ticker": "MELI",
+          "side": "long",
+          "shares": 40.0,
+          "cost_basis": 64480.8,
+          "avg_price": 1612.02,
+          "opened_at": "2026-03-25T05:18:46.377939"
+        },
+        {
+          "ticker": "META",
+          "side": "long",
+          "shares": 100.0,
+          "cost_basis": 54754.0,
+          "avg_price": 547.54,
+          "opened_at": "2026-03-27T00:02:59.486460"
+        },
+        {
+          "ticker": "QQQ",
+          "side": "long",
+          "shares": 500.0,
+          "cost_basis": 291990.0,
+          "avg_price": 583.98,
+          "opened_at": "2026-03-25T05:23:40.877205"
+        },
+        {
+          "ticker": "SPY",
+          "side": "long",
+          "shares": 300.0,
+          "cost_basis": 195953.99999999997,
+          "avg_price": 653.18,
+          "opened_at": "2026-03-25T05:23:57.213512"
+        },
+        {
+          "ticker": "TSM",
+          "side": "long",
+          "shares": 250.0,
+          "cost_basis": 85812.5,
+          "avg_price": 343.25,
+          "opened_at": "2026-03-25T05:16:16.199927"
+        }
+      ],
+      "transactions": [
+        {
+          "ticker": "TSM",
+          "action": "buy",
+          "shares": 250.0,
+          "price": 343.25,
+          "total_value": 85812.5,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-03-25T05:16:16.200419"
+        },
+        {
+          "ticker": "CVNA",
+          "action": "buy",
+          "shares": 250.0,
+          "price": 300.97,
+          "total_value": 75242.5,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-03-25T05:16:31.263729"
+        },
+        {
+          "ticker": "CSU.TO",
+          "action": "buy",
+          "shares": 30.0,
+          "price": 1772.45,
+          "total_value": 53173.5,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-03-25T05:16:48.006469"
+        },
+        {
+          "ticker": "000660.KS",
+          "action": "buy",
+          "shares": 74.0,
+          "price": 669.83,
+          "total_value": 49567.420000000006,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-03-25T05:17:18.835820"
+        },
+        {
+          "ticker": "MELI",
+          "action": "buy",
+          "shares": 40.0,
+          "price": 1612.02,
+          "total_value": 64480.8,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-03-25T05:18:46.378147"
+        },
+        {
+          "ticker": "QQQ",
+          "action": "buy",
+          "shares": 500.0,
+          "price": 583.98,
+          "total_value": 291990.0,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-03-25T05:23:40.877430"
+        },
+        {
+          "ticker": "SPY",
+          "action": "buy",
+          "shares": 300.0,
+          "price": 653.18,
+          "total_value": 195953.99999999997,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-03-25T05:23:57.213630"
+        },
+        {
+          "ticker": "META",
+          "action": "buy",
+          "shares": 100.0,
+          "price": 547.54,
+          "total_value": 54754.0,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-03-27T00:02:59.487997"
+        },
+        {
+          "ticker": "MA",
+          "action": "buy",
+          "shares": 100.0,
+          "price": 503.57,
+          "total_value": 50357.0,
+          "realized_pnl": 0.0,
+          "notes": null,
+          "created_at": "2026-04-10T00:18:58.264616"
+        }
+      ],
+      "cash_transactions": [
+        {
+          "action": "deposit",
+          "amount": 1000000.0,
+          "balance_after": 1000000.0,
+          "created_at": "2026-03-25T04:24:20.077033"
+        }
+      ],
+      "snapshots": [
+        {
+          "date": "2026-03-24",
+          "cash": 183779.27999999994,
+          "long_value": 815847.8400000001,
+          "short_value": 0.0,
+          "net_value": 999627.12,
+          "total_deposits": 1000000.0,
+          "daily_return": null,
+          "positions_json": "[{\"ticker\": \"000660.KS\", \"side\": \"long\", \"shares\": 74.0, \"price\": 664.71, \"market_value\": 49188.54}, {\"ticker\": \"CSU.TO\", \"side\": \"long\", \"shares\": 30.0, \"price\": 1772.65, \"market_value\": 53179.5}, {\"ticker\": \"CVNA\", \"side\": \"long\", \"shares\": 250.0, \"price\": 300.97, \"market_value\": 75242.5}, {\"ticker\": \"MELI\", \"side\": \"long\", \"shares\": 40.0, \"price\": 1612.02, \"market_value\": 64480.8}, {\"ticker\": \"QQQ\", \"side\": \"long\", \"shares\": 500.0, \"price\": 583.98, \"market_value\": 291990.0}, {\"ticker\": \"SPY\", \"side\": \"long\", \"shares\": 300.0, \"price\": 653.18, \"market_value\": 195954.0}, {\"ticker\": \"TSM\", \"side\": \"long\", \"shares\": 250.0, \"price\": 343.25, \"market_value\": 85812.5}]"
+        },
+        {
+          "date": "2026-03-25",
+          "cash": 183779.27999999994,
+          "long_value": 820707.78,
+          "short_value": 0.0,
+          "net_value": 1004487.0599999999,
+          "total_deposits": 1000000.0,
+          "daily_return": 0.004861752850402802,
+          "positions_json": "[{\"ticker\": \"000660.KS\", \"side\": \"long\", \"shares\": 74.0, \"price\": 661.37, \"market_value\": 48941.38}, {\"ticker\": \"CSU.TO\", \"side\": \"long\", \"shares\": 30.0, \"price\": 1745.15, \"market_value\": 52354.5}, {\"ticker\": \"CVNA\", \"side\": \"long\", \"shares\": 250.0, \"price\": 308.45, \"market_value\": 77112.5}, {\"ticker\": \"MELI\", \"side\": \"long\", \"shares\": 40.0, \"price\": 1640.01, \"market_value\": 65600.4}, {\"ticker\": \"QQQ\", \"side\": \"long\", \"shares\": 500.0, \"price\": 586.7, \"market_value\": 293350.0}, {\"ticker\": \"SPY\", \"side\": \"long\", \"shares\": 300.0, \"price\": 655.98, \"market_value\": 196794.0}, {\"ticker\": \"TSM\", \"side\": \"long\", \"shares\": 250.0, \"price\": 346.22, \"market_value\": 86555.0}]"
+        },
+        {
+          "date": "2026-03-26",
+          "cash": 129025.27999999994,
+          "long_value": 855664.22,
+          "short_value": 0.0,
+          "net_value": 984689.4999999999,
+          "total_deposits": 1000000.0,
+          "daily_return": -0.0197091239781626,
+          "positions_json": "[{\"ticker\": \"000660.KS\", \"side\": \"long\", \"shares\": 74.0, \"price\": 610.88, \"market_value\": 45205.12}, {\"ticker\": \"CSU.TO\", \"side\": \"long\", \"shares\": 30.0, \"price\": 1772.45, \"market_value\": 53173.5}, {\"ticker\": \"CVNA\", \"side\": \"long\", \"shares\": 250.0, \"price\": 301.37, \"market_value\": 75342.5}, {\"ticker\": \"MELI\", \"side\": \"long\", \"shares\": 40.0, \"price\": 1630.99, \"market_value\": 65239.6}, {\"ticker\": \"META\", \"side\": \"long\", \"shares\": 100.0, \"price\": 547.54, \"market_value\": 54754.0}, {\"ticker\": \"QQQ\", \"side\": \"long\", \"shares\": 500.0, \"price\": 573.79, \"market_value\": 286895.0}, {\"ticker\": \"SPY\", \"side\": \"long\", \"shares\": 300.0, \"price\": 645.09, \"market_value\": 193527.0}, {\"ticker\": \"TSM\", \"side\": \"long\", \"shares\": 250.0, \"price\": 326.11, \"market_value\": 81527.5}]"
+        },
+        {
+          "date": "2026-04-09",
+          "cash": 78668.27999999994,
+          "long_value": 970004.16,
+          "short_value": 0.0,
+          "net_value": 1048672.44,
+          "total_deposits": 1000000.0,
+          "daily_return": 0.06497778233646248,
+          "positions_json": "[{\"ticker\": \"000660.KS\", \"side\": \"long\", \"shares\": 74.0, \"price\": 698.74, \"market_value\": 51706.76}, {\"ticker\": \"CSU.TO\", \"side\": \"long\", \"shares\": 30.0, \"price\": 1706.68, \"market_value\": 51200.4}, {\"ticker\": \"CVNA\", \"side\": \"long\", \"shares\": 250.0, \"price\": 326.93, \"market_value\": 81732.5}, {\"ticker\": \"MA\", \"side\": \"long\", \"shares\": 100.0, \"price\": 503.57, \"market_value\": 50357.0}, {\"ticker\": \"MELI\", \"side\": \"long\", \"shares\": 40.0, \"price\": 1793.2, \"market_value\": 71728.0}, {\"ticker\": \"META\", \"side\": \"long\", \"shares\": 100.0, \"price\": 628.39, \"market_value\": 62839.0}, {\"ticker\": \"QQQ\", \"side\": \"long\", \"shares\": 500.0, \"price\": 610.19, \"market_value\": 305095.0}, {\"ticker\": \"SPY\", \"side\": \"long\", \"shares\": 300.0, \"price\": 679.91, \"market_value\": 203973.0}, {\"ticker\": \"TSM\", \"side\": \"long\", \"shares\": 250.0, \"price\": 365.49, \"market_value\": 91372.5}]"
+        }
+      ]
+    },
+    {
+      "name": "Paper 2",
+      "cash_balance": 1000000.0,
+      "initial_deposit": 1000000.0,
+      "created_at": "2026-03-25T14:39:54.418079",
+      "positions": [],
+      "transactions": [],
+      "cash_transactions": [
+        {
+          "action": "deposit",
+          "amount": 1000000.0,
+          "balance_after": 1000000.0,
+          "created_at": "2026-03-25T14:39:54.419908"
+        }
+      ],
+      "snapshots": [
+        {
+          "date": "2026-03-25",
+          "cash": 1000000.0,
+          "long_value": 0.0,
+          "short_value": 0.0,
+          "net_value": 1000000.0,
+          "total_deposits": 1000000.0,
+          "daily_return": null,
+          "positions_json": "[]"
+        },
+        {
+          "date": "2026-03-26",
+          "cash": 1000000.0,
+          "long_value": 0.0,
+          "short_value": 0.0,
+          "net_value": 1000000.0,
+          "total_deposits": 1000000.0,
+          "daily_return": 0.0,
+          "positions_json": "[]"
+        },
+        {
+          "date": "2026-04-09",
+          "cash": 1000000.0,
+          "long_value": 0.0,
+          "short_value": 0.0,
+          "net_value": 1000000.0,
+          "total_deposits": 1000000.0,
+          "daily_return": 0.0,
+          "positions_json": "[]"
+        }
+      ]
+    }
+  ]
+}
