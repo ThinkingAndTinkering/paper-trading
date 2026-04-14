@@ -1,1 +1,245 @@
 @import "tailwindcss";
+
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS — DARK (default, applied via :root)
+   Light tokens override via [data-theme="light"]
+══════════════════════════════════════════════ */
+:root {
+  --bg:       #07090f;
+  --bg-nav:   #090c16;
+  --bg-card:  #0d1220;
+  --bg-el:    #111b2d;
+  --bg-hover: #162034;
+  --bg-act:   #1c2c46;
+  --bdr:      rgba(255,255,255,0.055);
+  --bdr-mid:  rgba(255,255,255,0.095);
+  --bdr-str:  rgba(255,255,255,0.16);
+  --t:        #eef5fc;
+  --t2:       #a0c6e0;
+  --t3:       #7090aa;
+  --t-lbl:    #8aaec8;
+  --blue:     #4a9eff;
+  --blue-dim: rgba(74,158,255,0.11);
+  --blue-bdr: rgba(74,158,255,0.22);
+  --grn:      #1ec97c;
+  --grn-dim:  rgba(30,201,124,0.1);
+  --grn-bdr:  rgba(30,201,124,0.22);
+  --red:      #f04565;
+  --red-dim:  rgba(240,69,101,0.09);
+  --red-bdr:  rgba(240,69,101,0.22);
+}
+
+[data-theme="light"] {
+  --bg:       #eef0f4;
+  --bg-nav:   #ffffff;
+  --bg-card:  #ffffff;
+  --bg-el:    #f3f5f8;
+  --bg-hover: #eaecf1;
+  --bg-act:   #e2e7ef;
+  --bdr:      rgba(0,0,0,0.065);
+  --bdr-mid:  rgba(0,0,0,0.105);
+  --bdr-str:  rgba(0,0,0,0.17);
+  --t:        #0f1923;
+  --t2:       #5a7089;
+  --t3:       #98afc2;
+  --t-lbl:    #82a0b5;
+  --blue:     #1a6fe8;
+  --blue-dim: rgba(26,111,232,0.07);
+  --blue-bdr: rgba(26,111,232,0.18);
+  --grn:      #0a9955;
+  --grn-dim:  rgba(10,153,85,0.07);
+  --grn-bdr:  rgba(10,153,85,0.2);
+  --red:      #cc3347;
+  --red-dim:  rgba(204,51,71,0.07);
+  --red-bdr:  rgba(204,51,71,0.18);
+}
+
+/* ══════════════════════════════════════════════
+   SUMMARY CARD — blue accent line at top
+══════════════════════════════════════════════ */
+.card-summary {
+  position: relative;
+  overflow: hidden;
+}
+.card-summary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(74,158,255,0.45) 20%,
+    rgba(74,158,255,0.45) 80%,
+    transparent 100%
+  );
+}
+
+/* ══════════════════════════════════════════════
+   BASE
+══════════════════════════════════════════════ */
+html, body {
+  background: var(--bg);
+  color: var(--t);
+}
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* DM Mono for all monospace contexts */
+.font-mono, code, kbd, pre, samp {
+  font-family: 'DM Mono', 'Fira Code', monospace;
+}
+
+/* ══════════════════════════════════════════════
+   THEME-AWARE P&L UTILITIES
+   Replace Tailwind's emerald/red with CSS-var-based classes
+   so both dark and light modes get the right semantic colors.
+══════════════════════════════════════════════ */
+.text-pnl-pos  { color: var(--grn); }
+.text-pnl-neg  { color: var(--red); }
+.text-pnl-zero { color: var(--t3); }
+
+/* ══════════════════════════════════════════════
+   DARK MODE — TAILWIND CLASS REMAPPING
+   These override Tailwind's generated values only
+   when [data-theme="dark"] is on <html>.
+══════════════════════════════════════════════ */
+
+/* ── Surfaces ── */
+[data-theme="dark"] .bg-white        { background-color: var(--bg-card) !important; }
+[data-theme="dark"] .bg-gray-50      { background-color: var(--bg-el)   !important; }
+[data-theme="dark"] .bg-gray-100     { background-color: var(--bg-hover) !important; }
+[data-theme="dark"] .bg-gray-200     { background-color: var(--bg-act)  !important; }
+[data-theme="dark"] .bg-gray-600     { background-color: var(--bg-act)  !important; }
+[data-theme="dark"] .bg-gray-700     { background-color: var(--bg-act)  !important; }
+[data-theme="dark"] .bg-gray-800     { background-color: var(--bg-el)   !important; }
+[data-theme="dark"] .bg-gray-900     { background-color: var(--bg-el)   !important; }
+/* min-h-screen wrappers should use base bg, not the elevated card bg */
+[data-theme="dark"] .min-h-screen    { background-color: var(--bg)      !important; }
+
+[data-theme="dark"] .hover\:bg-gray-50:hover  { background-color: var(--bg-hover) !important; }
+[data-theme="dark"] .hover\:bg-gray-100:hover { background-color: var(--bg-hover) !important; }
+[data-theme="dark"] .hover\:bg-gray-200:hover { background-color: var(--bg-act)   !important; }
+
+/* ── Text ── */
+[data-theme="dark"] .text-gray-900 { color: var(--t)   !important; }
+[data-theme="dark"] .text-gray-800 { color: var(--t)   !important; }
+[data-theme="dark"] .text-gray-700 { color: var(--t2)  !important; }
+[data-theme="dark"] .text-gray-600 { color: var(--t2)  !important; }
+[data-theme="dark"] .text-gray-500 { color: var(--t3)  !important; }
+[data-theme="dark"] .text-gray-400 { color: var(--t3)  !important; }
+[data-theme="dark"] .hover\:text-gray-900:hover { color: var(--t) !important; }
+[data-theme="dark"] .hover\:text-gray-700:hover { color: var(--t) !important; }
+
+/* ── Borders ── */
+[data-theme="dark"] .border-gray-100 { border-color: var(--bdr)     !important; }
+[data-theme="dark"] .border-gray-200 { border-color: var(--bdr-mid) !important; }
+[data-theme="dark"] .border-gray-300 { border-color: var(--bdr-mid) !important; }
+[data-theme="dark"] .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--bdr) !important;
+}
+[data-theme="dark"] tbody tr {
+  border-color: var(--bdr) !important;
+}
+[data-theme="dark"] tbody tr + tr {
+  border-top-color: var(--bdr) !important;
+}
+
+/* ── Blue accent ── */
+[data-theme="dark"] .bg-blue-50          { background-color: var(--blue-dim) !important; }
+[data-theme="dark"] .bg-blue-100         { background-color: var(--blue-dim) !important; }
+[data-theme="dark"] .bg-blue-600         { background-color: var(--blue)     !important; }
+[data-theme="dark"] .bg-blue-700         { background-color: #3b8aef         !important; }
+[data-theme="dark"] .hover\:bg-blue-50:hover  { background-color: var(--blue-dim) !important; }
+[data-theme="dark"] .hover\:bg-blue-700:hover { background-color: #3b8aef         !important; }
+[data-theme="dark"] .text-blue-600       { color: var(--blue) !important; }
+[data-theme="dark"] .text-blue-700       { color: var(--blue) !important; }
+[data-theme="dark"] .text-blue-800       { color: var(--blue) !important; }
+[data-theme="dark"] .border-blue-200     { border-color: var(--blue-bdr) !important; }
+[data-theme="dark"] .border-blue-300     { border-color: var(--blue-bdr) !important; }
+[data-theme="dark"] .border-dashed.border-blue-300 { border-color: var(--blue-bdr) !important; }
+[data-theme="dark"] .focus\:ring-blue-500:focus    { --tw-ring-color: var(--blue-dim) !important; }
+[data-theme="dark"] .focus\:border-blue-500:focus  { border-color: var(--blue) !important; }
+
+/* ── Emerald → positive green ── */
+[data-theme="dark"] .text-emerald-600 { color: var(--grn) !important; }
+[data-theme="dark"] .text-emerald-700 { color: var(--grn) !important; }
+[data-theme="dark"] .text-emerald-800 { color: var(--grn) !important; }
+[data-theme="dark"] .bg-emerald-50    { background-color: var(--grn-dim) !important; }
+[data-theme="dark"] .bg-emerald-100   { background-color: var(--grn-dim) !important; }
+[data-theme="dark"] .bg-emerald-600   { background-color: #18a866        !important; }
+[data-theme="dark"] .bg-emerald-700   { background-color: #149055        !important; }
+[data-theme="dark"] .hover\:bg-emerald-700:hover { background-color: #149055 !important; }
+[data-theme="dark"] .border-emerald-200 { border-color: var(--grn-bdr) !important; }
+
+/* ── Red → negative red ── */
+[data-theme="dark"] .text-red-600  { color: var(--red) !important; }
+[data-theme="dark"] .text-red-700  { color: var(--red) !important; }
+[data-theme="dark"] .text-red-800  { color: var(--red) !important; }
+[data-theme="dark"] .bg-red-50     { background-color: var(--red-dim) !important; }
+[data-theme="dark"] .bg-red-100    { background-color: var(--red-dim) !important; }
+[data-theme="dark"] .bg-red-600    { background-color: #d13050        !important; }
+[data-theme="dark"] .bg-red-700    { background-color: #b02540        !important; }
+[data-theme="dark"] .hover\:bg-red-700:hover { background-color: #b02540 !important; }
+[data-theme="dark"] .border-red-200 { border-color: var(--red-bdr) !important; }
+
+/* ── Amber (reset confirmation) ── */
+[data-theme="dark"] .text-amber-700          { color: #e8aa30 !important; }
+[data-theme="dark"] .bg-amber-50             { background-color: rgba(232,170,48,0.1) !important; }
+[data-theme="dark"] .bg-amber-600            { background-color: #c08820 !important; }
+[data-theme="dark"] .hover\:bg-amber-700:hover { background-color: #a07018 !important; }
+[data-theme="dark"] .hover\:bg-amber-50:hover  { background-color: rgba(232,170,48,0.1) !important; }
+
+/* ── Orange (Short badge) ── */
+[data-theme="dark"] .text-orange-700 { color: #e87840 !important; }
+[data-theme="dark"] .bg-orange-100   { background-color: rgba(232,120,64,0.12) !important; }
+
+/* ── Purple (Cover badge) ── */
+[data-theme="dark"] .text-purple-700 { color: #9a70d8 !important; }
+[data-theme="dark"] .bg-purple-100   { background-color: rgba(154,112,216,0.12) !important; }
+
+/* ── Inputs ── */
+[data-theme="dark"] input:not([type="file"]):not([type="range"]),
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: var(--bg-el)   !important;
+  color:            var(--t)       !important;
+  border-color:     var(--bdr-mid) !important;
+}
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder { color: var(--t3) !important; }
+
+/* ── Shadows → no shadows on dark; use border depth instead ── */
+[data-theme="dark"] .shadow-sm { box-shadow: none !important; }
+[data-theme="dark"] .shadow-xl { box-shadow: 0 0 0 1px var(--bdr-mid), 0 24px 48px rgba(0,0,0,0.55) !important; }
+[data-theme="dark"] .shadow-lg { box-shadow: 0 0 0 1px var(--bdr-mid), 0 12px 24px rgba(0,0,0,0.4)  !important; }
+
+/* ── Modal overlay ── */
+[data-theme="dark"] .bg-black\/30 { background-color: rgba(0,0,0,0.72) !important; }
+
+/* ── Nav: slightly darker than cards ── */
+[data-theme="dark"] nav { background-color: var(--bg-nav) !important; }
+
+/* ── Table headers specifically ── */
+[data-theme="dark"] thead { background-color: var(--bg-el) !important; }
+
+/* ── Recharts ── */
+[data-theme="dark"] .recharts-default-tooltip {
+  background-color: var(--bg-card) !important;
+  border-color:     var(--bdr-mid) !important;
+}
+[data-theme="dark"] .recharts-tooltip-label         { color: var(--t2) !important; }
+[data-theme="dark"] .recharts-tooltip-item-value    { color: var(--t)  !important; }
+[data-theme="dark"] .recharts-text tspan            { fill:  var(--t3) !important; }
+[data-theme="dark"] .recharts-cartesian-axis-tick-value { fill: var(--t3) !important; }
+[data-theme="dark"] .recharts-legend-item-text      { color: var(--t2) !important; }
+
+/* ══════════════════════════════════════════════
+   LIGHT MODE — page background override
+══════════════════════════════════════════════ */
+[data-theme="light"] .min-h-screen { background-color: var(--bg) !important; }
+[data-theme="light"] nav           { background-color: var(--bg-nav) !important;
+                                     box-shadow: 0 1px 4px rgba(0,0,0,0.07) !important; }

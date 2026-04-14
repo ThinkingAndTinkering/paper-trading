@@ -39,9 +39,9 @@ export function formatDateShort(isoString) {
 }
 
 export function pnlColor(value) {
-  if (value > 0) return "text-emerald-600";
-  if (value < 0) return "text-red-600";
-  return "text-gray-500";
+  if (value > 0) return "text-pnl-pos";
+  if (value < 0) return "text-pnl-neg";
+  return "text-pnl-zero";
 }
 
 export function pnlBg(value) {

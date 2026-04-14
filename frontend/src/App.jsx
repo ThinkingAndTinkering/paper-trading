@@ -325,6 +325,12 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const fileInputRef = useRef(null);
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const handleExport = async () => {
     try {
@@ -535,7 +541,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 overflow-visible">
-        <div className="max-w-7xl mx-auto px-4 overflow-visible">
+        <div className="max-w-[1400px] mx-auto px-4 overflow-visible">
           <div className="flex items-center h-14 gap-1 overflow-visible">
             <span className="font-bold text-gray-900 mr-4 text-lg flex-shrink-0">
               Paper Trading
@@ -592,11 +598,33 @@ export default function App() {
                 onChange={handleImport}
                 className="hidden"
               />
+              <div className="flex bg-gray-100 border border-gray-200 rounded-lg p-0.5 ml-1">
+                <button
+                  onClick={() => setTheme("dark")}
+                  className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                    theme === "dark"
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Dark
+                </button>
+                <button
+                  onClick={() => setTheme("light")}
+                  className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                    theme === "light"
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Light
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </nav>
-      <main className="max-w-7xl mx-auto px-4 py-6">{renderPage()}</main>
+      <main className="max-w-[1400px] mx-auto px-4 py-6">{renderPage()}</main>
     </div>
   );
 }

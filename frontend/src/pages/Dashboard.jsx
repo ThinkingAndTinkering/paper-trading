@@ -21,10 +21,10 @@ function PnlStat({ label, pnl }) {
   if (!pnl) return null;
   return (
     <div>
-      <div className="text-xs text-gray-500 uppercase tracking-wide mb-0.5">{label}</div>
-      <div className={`text-xl font-bold ${pnlColor(pnl.dollars)}`}>
+      <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-0.5">{label}</div>
+      <div className={`text-lg font-semibold font-mono ${pnlColor(pnl.dollars)}`}>
         {pnl.dollars >= 0 ? "+" : ""}{formatCurrency(pnl.dollars)}
-        <span className="ml-1 text-sm font-medium">
+        <span className="ml-1 text-[11px] font-medium font-mono">
           ({pnl.pct >= 0 ? "+" : ""}{pnl.pct.toFixed(2)}%)
         </span>
       </div>
@@ -35,6 +35,7 @@ function PnlStat({ label, pnl }) {
 function PortfolioSummary({ portfolio, pnlStats, onUpdate, onRefresh, refreshing }) {
   const [cashAmount, setCashAmount] = useState("");
   const [cashLoading, setCashLoading] = useState(false);
+  const [cashOpen, setCashOpen] = useState(false);
 
   const handleCash = async (action) => {
     const amt = parseFloat(cashAmount);
@@ -92,7 +93,7 @@ function PortfolioSummary({ portfolio, pnlStats, onUpdate, onRefresh, refreshing
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+    <div className="card-summary bg-white rounded-xl shadow-sm border border-gray-200 px-5 py-4 mb-5">
       {portfolio.margin_call && (
         <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 mb-4 font-medium">
           MARGIN CALL — Portfolio below maintenance requirement
@@ -100,68 +101,82 @@ function PortfolioSummary({ portfolio, pnlStats, onUpdate, onRefresh, refreshing
       )}
 
       {/* NAV row */}
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-baseline gap-6 flex-wrap">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-baseline gap-10 flex-wrap">
           <div>
-            <div className="text-xs text-gray-500 uppercase tracking-wide mb-0.5">
-              NAV
+            <div className="text-[10px] text-gray-500 uppercase tracking-wide mb-0.5">
+              Net Asset Value
             </div>
-            <div className="text-4xl font-bold text-gray-900 tracking-tight">
+            <div className="text-[32px] font-bold font-mono text-gray-900 tracking-tight leading-none">
               {formatNavFull(portfolio.nav)}
             </div>
           </div>
           <PnlStat label="Day P&L" pnl={pnlStats?.day} />
-          <PnlStat label="MTD P&L" pnl={pnlStats?.mtd} />
-          <PnlStat label="YTD P&L" pnl={pnlStats?.ytd} />
+          <PnlStat label="Month to Date" pnl={pnlStats?.mtd} />
+          <PnlStat label="Year to Date" pnl={pnlStats?.ytd} />
         </div>
-        <button
-          onClick={onRefresh}
-          disabled={refreshing}
-          className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
-        >
-          {refreshing ? "Refreshing..." : "Refresh Prices"}
-        </button>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            onClick={onRefresh}
+            disabled={refreshing}
+            className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+          >
+            {refreshing ? "Refreshing..." : "Refresh Prices"}
+          </button>
+          <button
+            onClick={() => setCashOpen((o) => !o)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+              cashOpen
+                ? "bg-blue-50 text-blue-700 border-blue-200"
+                : "text-gray-700 border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            Manage Cash {cashOpen ? "▴" : "▾"}
+          </button>
+        </div>
       </div>
 
-      <div className="border-t border-gray-100 pt-4 mb-4" />
+      <div className="border-t border-gray-100 pt-3 mb-3" />
 
       {/* Stats grid */}
-      <div className="flex flex-wrap gap-x-8 gap-y-3 mb-4">
+      <div className="flex flex-wrap gap-x-7 gap-y-2 mb-3">
         {stats.map((s) => (
           <div key={s.label} className="min-w-0">
-            <div className="text-[11px] text-gray-500 uppercase tracking-wide">
+            <div className="text-[10px] text-gray-500 uppercase tracking-wide">
               {s.label}
             </div>
-            <div className="font-semibold text-sm text-gray-800 whitespace-nowrap">{s.value}</div>
-            {s.sub && <div className="text-xs text-gray-400">{s.sub}</div>}
+            <div className="font-semibold text-[13px] font-mono text-gray-800 whitespace-nowrap">{s.value}</div>
+            {s.sub && <div className="text-[10px] text-gray-400">{s.sub}</div>}
           </div>
         ))}
       </div>
 
-      {/* Cash actions */}
-      <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-        <input
-          type="number"
-          placeholder="Amount"
-          value={cashAmount}
-          onChange={(e) => setCashAmount(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-1.5 w-32 text-sm"
-        />
-        <button
-          onClick={() => handleCash("deposit")}
-          disabled={cashLoading}
-          className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
-        >
-          Deposit
-        </button>
-        <button
-          onClick={() => handleCash("withdraw")}
-          disabled={cashLoading}
-          className="bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-700 disabled:opacity-50"
-        >
-          Withdraw
-        </button>
-      </div>
+      {/* Cash actions — collapsible */}
+      {cashOpen && (
+        <div className="flex items-center gap-2 pt-3 mt-1 border-t border-gray-100">
+          <input
+            type="number"
+            placeholder="Amount"
+            value={cashAmount}
+            onChange={(e) => setCashAmount(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-1.5 w-36 text-sm font-mono"
+          />
+          <button
+            onClick={() => handleCash("deposit")}
+            disabled={cashLoading}
+            className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
+          >
+            Deposit
+          </button>
+          <button
+            onClick={() => handleCash("withdraw")}
+            disabled={cashLoading}
+            className="border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+          >
+            Withdraw
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -272,7 +287,7 @@ function TradeForm({ portfolioId, nav, onTraded, prefillTicker }) {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-      <h2 className="font-semibold text-gray-900 mb-4">Quick Trade</h2>
+      <h2 className="text-[10.5px] font-semibold uppercase tracking-widest text-gray-500 mb-3">Quick Trade</h2>
       <div className="space-y-3">
         {/* Ticker + Quote with search */}
         <div className="relative">
@@ -294,7 +309,7 @@ function TradeForm({ portfolioId, nav, onTraded, prefillTicker }) {
             <button
               onClick={() => lookupQuote()}
               disabled={quoteLoading}
-              className="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-900 disabled:opacity-50"
+              className="bg-gray-100 text-gray-700 border border-gray-200 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 disabled:opacity-50"
             >
               {quoteLoading ? "..." : "Quote"}
             </button>
@@ -361,12 +376,16 @@ function TradeForm({ portfolioId, nav, onTraded, prefillTicker }) {
             <button
               key={a}
               onClick={() => setAction(a)}
-              className={`py-1.5 rounded-lg text-xs font-medium capitalize transition-colors ${
+              className={`py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wide border transition-colors ${
                 action === a
-                  ? a === "buy" || a === "cover"
-                    ? "bg-emerald-600 text-white"
-                    : "bg-red-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? a === "buy"
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                    : a === "sell"
+                    ? "bg-red-50 text-red-700 border-red-200"
+                    : a === "short"
+                    ? "bg-red-50 text-red-600 border-red-200"
+                    : "bg-emerald-50 text-emerald-600 border-emerald-200"
+                  : "bg-gray-100 text-gray-500 border-transparent hover:bg-gray-200"
               }`}
             >
               {a}
@@ -427,10 +446,10 @@ function TradeForm({ portfolioId, nav, onTraded, prefillTicker }) {
         <button
           onClick={handleTrade}
           disabled={tradeLoading || !quote}
-          className={`w-full py-2.5 rounded-lg text-sm font-medium text-white disabled:opacity-50 ${
+          className={`w-full py-2.5 rounded-lg text-sm font-bold uppercase tracking-wide border disabled:opacity-50 transition-colors ${
             action === "buy" || action === "cover"
-              ? "bg-emerald-600 hover:bg-emerald-700"
-              : "bg-red-600 hover:bg-red-700"
+              ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+              : "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
           }`}
         >
           {tradeLoading
@@ -448,10 +467,10 @@ const COLUMNS = [
   { key: "shares", label: "Shares", align: "right", getValue: (p) => p.shares },
   { key: "avg_price", label: "Avg Cost", align: "right", getValue: (p) => p.avg_price },
   { key: "current_price", label: "Price", align: "right", getValue: (p) => p.current_price },
-  { key: "market_value", label: "Mkt Value", align: "right", getValue: (p) => p.market_value },
+  { key: "market_value", label: "Mkt Value", align: "right", getValue: (p) => (p.side === "short" ? -p.market_value : p.market_value) },
   { key: "unrealized_pnl", label: "P&L", align: "right", getValue: (p) => p.unrealized_pnl },
   { key: "unrealized_pnl_pct", label: "P&L %", align: "right", getValue: (p) => p.unrealized_pnl_pct },
-  { key: "weight", label: "Weight", align: "right", getValue: (p) => p.weight },
+  { key: "weight", label: "Weight", align: "right", getValue: (p) => (p.side === "short" ? -p.weight : p.weight) },
 ];
 
 function PositionsTable({ positions, onSelectTicker }) {
@@ -491,8 +510,9 @@ function PositionsTable({ positions, onSelectTicker }) {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="font-semibold text-gray-900">Open Positions</h2>
+      <div className="px-5 py-3 border-b border-gray-200 flex items-center justify-between">
+        <h2 className="text-[10.5px] font-semibold uppercase tracking-widest text-gray-500">Open Positions</h2>
+        <span className="font-mono text-[11px] text-gray-400">{positions.length} positions</span>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
@@ -502,7 +522,7 @@ function PositionsTable({ positions, onSelectTicker }) {
                 <th
                   key={col.key}
                   onClick={() => handleSort(col.key)}
-                  className={`${col.align === "right" ? "text-right" : "text-left"} px-2.5 py-2.5 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap`}
+                  className={`${col.align === "right" ? "text-right" : "text-left"} px-2.5 py-1.5 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap`}
                 >
                   {col.label}
                   <span className="text-blue-500">{arrow(col.key)}</span>
@@ -517,13 +537,13 @@ function PositionsTable({ positions, onSelectTicker }) {
                 className="hover:bg-gray-50 cursor-pointer"
                 onClick={() => onSelectTicker?.(pos.ticker)}
               >
-                <td className="px-2.5 py-2.5">
+                <td className="px-2.5 py-1.5">
                   <div className="font-medium text-blue-700 hover:text-blue-900">{pos.ticker}</div>
                   <div className="text-gray-500 truncate max-w-28" style={{ fontSize: "10px" }}>
                     {pos.name}
                   </div>
                 </td>
-                <td className="px-2.5 py-2.5">
+                <td className="px-2.5 py-1.5">
                   <span
                     className={`inline-block px-1.5 py-0.5 rounded font-medium ${
                       pos.side === "long"
@@ -535,33 +555,33 @@ function PositionsTable({ positions, onSelectTicker }) {
                     {pos.side.toUpperCase()}
                   </span>
                 </td>
-                <td className="text-right px-2.5 py-2.5 font-mono">
+                <td className="text-right px-2.5 py-1.5 font-mono">
                   {formatShares(pos.shares)}
                 </td>
-                <td className="text-right px-2.5 py-2.5 font-mono">
+                <td className="text-right px-2.5 py-1.5 font-mono">
                   ${pos.avg_price.toFixed(2)}
                 </td>
-                <td className="text-right px-2.5 py-2.5 font-mono">
+                <td className="text-right px-2.5 py-1.5 font-mono">
                   <div>${pos.current_price.toFixed(2)}</div>
                   <div className={pnlColor(pos.change)} style={{ fontSize: "10px" }}>
                     {formatPct(pos.change_pct)}
                   </div>
                 </td>
-                <td className="text-right px-2.5 py-2.5 font-mono">
-                  {formatCurrency(pos.market_value)}
+                <td className="text-right px-2.5 py-1.5 font-mono">
+                  {pos.side === "short" ? `-${formatCurrency(pos.market_value)}` : formatCurrency(pos.market_value)}
                 </td>
                 <td
-                  className={`text-right px-2.5 py-2.5 font-mono font-medium ${pnlColor(pos.unrealized_pnl)}`}
+                  className={`text-right px-2.5 py-1.5 font-mono font-medium ${pnlColor(pos.unrealized_pnl)}`}
                 >
                   {formatCurrency(pos.unrealized_pnl)}
                 </td>
                 <td
-                  className={`text-right px-2.5 py-2.5 font-mono ${pnlColor(pos.unrealized_pnl_pct)}`}
+                  className={`text-right px-2.5 py-1.5 font-mono ${pnlColor(pos.unrealized_pnl_pct)}`}
                 >
                   {formatPct(pos.unrealized_pnl_pct)}
                 </td>
-                <td className="text-right px-2.5 py-2.5 font-mono">
-                  {pos.weight.toFixed(1)}%
+                <td className="text-right px-2.5 py-1.5 font-mono">
+                  {pos.side === "short" ? "-" : ""}{pos.weight.toFixed(1)}%
                 </td>
               </tr>
             ))}
@@ -664,7 +684,7 @@ export default function Dashboard({ portfolio, onUpdate }) {
   return (
     <div>
       <div className="mb-4">
-        <h1 className="text-xl font-bold text-gray-900">{portfolio.name}</h1>
+        <h1 className="text-[15px] font-semibold text-gray-900">{portfolio.name}</h1>
       </div>
       <PortfolioSummary
         portfolio={portfolio}
