@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from models import get_session, Portfolio, DailySnapshot
 from services.snapshot import generate_snapshot
+from services.backfill import backfill_snapshots
 
 router = APIRouter()
 
@@ -9,6 +10,11 @@ router = APIRouter()
 def create_snapshot(portfolio_id: int):
     result = generate_snapshot(portfolio_id=portfolio_id)
     return result
+
+
+@router.post("/snapshots/{portfolio_id}/backfill")
+def backfill(portfolio_id: int):
+    return backfill_snapshots(portfolio_id=portfolio_id)
 
 
 @router.get("/snapshots/{portfolio_id}")

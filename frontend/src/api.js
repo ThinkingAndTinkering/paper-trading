@@ -56,6 +56,8 @@ export const getTransactions = (id) => request(`/transactions/${id}`);
 // Snapshots & Performance
 export const generateSnapshot = (id) =>
   request(`/snapshots/${id}/generate`, { method: "POST" });
+export const backfillSnapshots = (id) =>
+  request(`/snapshots/${id}/backfill`, { method: "POST" });
 export const getSnapshots = (id) => request(`/snapshots/${id}`);
 export const getPerformance = (id) => request(`/performance/${id}`);
 
@@ -63,6 +65,12 @@ export const getPerformance = (id) => request(`/performance/${id}`);
 export const getSectors = (id) => request(`/analytics/${id}/sectors`);
 export const getConcentration = (id) => request(`/analytics/${id}/concentration`);
 export const getRiskMetrics = (id) => request(`/analytics/${id}/risk`);
+export const getAttribution = (id, period = "all") =>
+  request(`/analytics/${id}/attribution?period=${period}`);
+export const getBenchmark = (ticker, start, end) =>
+  request(
+    `/benchmark?ticker=${encodeURIComponent(ticker)}&start=${start}&end=${end}`
+  );
 
 // Data export/import
 export const exportData = () => request("/export");

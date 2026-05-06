@@ -1,7 +1,12 @@
 import numpy as np
-from fastapi import APIRouter
+from datetime import date, timedelta
+from fastapi import APIRouter, Query
+import pandas as pd
+import yfinance as yf
+
 from models import get_session, Portfolio, Position, DailySnapshot
-from services.pricing import get_quotes, get_sector, get_history
+from services.pricing import get_quotes, get_sector, get_history, _get_cached_info
+from services.attribution import compute_attribution
 
 router = APIRouter()
 
@@ -143,6 +148,107 @@ def risk_metrics(portfolio_id: int):
         }
     finally:
         session.close()
+
+
+@router.get("/analytics/{portfolio_id}/attribution")
+def attribution(portfolio_id: int, period: str = Query("all")):
+    return compute_attribution(portfolio_id, period)
+
+
+@router.get("/benchmark")
+def benchmark(
+    ticker: str = Query(...),
+    start: str = Query(...),
+    end: str = Query(...),
+):
+    """Return USD-converted historical close + cumulative return % vs `start`.
+
+    The series starts on the first available trading day at-or-after `start`,
+    with cum_return_pct=0 on that anchor day.
+    """
+    tk = ticker.upper().strip()
+    try:
+        start_d = date.fromisoformat(start)
+        end_d = date.fromisoformat(end)
+    except Exception:
+        return {"error": "invalid start/end date"}
+
+    info = _get_cached_info(tk)
+    name = info.get("shortName") or info.get("longName") or tk
+    currency = (info.get("currency") or "USD").upper()
+
+    try:
+        df = yf.download(
+            tk,
+            start=start_d - timedelta(days=4),  # back off a bit so we have an anchor
+            end=end_d + timedelta(days=1),
+            auto_adjust=False,
+            progress=False,
+        )
+    except Exception as e:
+        return {"error": f"yfinance failed: {e}"}
+
+    if df is None or df.empty:
+        return {"error": f"No data for {tk}"}
+
+    closes = df["Close"]
+    if hasattr(closes, "columns"):  # multi-level
+        closes = closes.iloc[:, 0]
+    closes = closes.dropna()
+    if closes.empty:
+        return {"error": f"No close data for {tk}"}
+
+    # FX series for non-USD
+    fx_series = None
+    if currency != "USD":
+        try:
+            fx_df = yf.download(
+                f"{currency}USD=X",
+                start=start_d - timedelta(days=4),
+                end=end_d + timedelta(days=1),
+                auto_adjust=False,
+                progress=False,
+            )
+            if fx_df is not None and not fx_df.empty:
+                fx_close = fx_df["Close"]
+                if hasattr(fx_close, "columns"):
+                    fx_close = fx_close.iloc[:, 0]
+                fx_series = fx_close.dropna()
+        except Exception:
+            fx_series = None
+
+    series = []
+    anchor_close = None
+    for ts, local_close in closes.items():
+        d = ts.date() if hasattr(ts, "date") else ts
+        if d < start_d or d > end_d:
+            continue
+        if fx_series is not None:
+            # Use the FX close at-or-before this date
+            valid = fx_series.index[fx_series.index <= ts]
+            if len(valid) == 0:
+                continue
+            fx = float(fx_series.loc[valid[-1]])
+        else:
+            fx = 1.0
+        usd_close = float(local_close) * fx
+        if anchor_close is None:
+            anchor_close = usd_close
+            cum_return = 0.0
+        else:
+            cum_return = (usd_close / anchor_close - 1) * 100
+        series.append({
+            "date": d.isoformat(),
+            "close_usd": round(usd_close, 4),
+            "cum_return_pct": round(cum_return, 4),
+        })
+
+    return {
+        "ticker": tk,
+        "name": name,
+        "currency": currency,
+        "series": series,
+    }
 
 
 @router.get("/transactions/{portfolio_id}")

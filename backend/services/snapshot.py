@@ -20,14 +20,20 @@ def generate_snapshot(portfolio_id: int = None) -> dict:
         long_value = 0.0
         short_value = 0.0
         positions_detail = []
+        missing = []
 
         if db_positions:
             tickers = list(set(pos.ticker for pos in db_positions))
             quotes = get_quotes(tickers)
 
+
             for pos in db_positions:
                 q = quotes.get(pos.ticker)
-                current_price = q.price if q else pos.avg_price
+                if q:
+                    current_price = q.price
+                else:
+                    missing.append(pos.ticker)
+                    current_price = pos.avg_price
                 mv = pos.shares * current_price
 
                 if pos.side == "long":
@@ -42,6 +48,13 @@ def generate_snapshot(portfolio_id: int = None) -> dict:
                     "price": current_price,
                     "market_value": round(mv, 2),
                 })
+
+        if missing:
+            print(
+                f"[snapshot] WARNING portfolio={p.id} date={today} "
+                f"quote fallback to avg_price for: {','.join(missing)} — "
+                "this snapshot will be overwritten by the next backfill run"
+            )
 
         nav = p.cash_balance + long_value - short_value
 

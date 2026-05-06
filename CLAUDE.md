@@ -24,7 +24,9 @@ paper-trading/
 │   └── services/
 │       ├── pricing.py       # yfinance wrapper with 60s TTL cache + FX conversion to USD
 │       ├── margin.py        # Reg T margin (only shows when actually borrowing)
-│       └── snapshot.py      # Daily NAV snapshot with modified Dietz TWR
+│       ├── snapshot.py      # Daily NAV snapshot with modified Dietz TWR
+│       ├── backfill.py      # Reconstruct missing daily snapshots from yfinance history + transaction log
+│       └── attribution.py   # Per-ticker $ P&L and % contribution decomposition
 ├── frontend/
 │   ├── src/
 │   │   ├── App.jsx          # Multi-portfolio selector (drag-to-reorder), nav, setup screen
@@ -33,7 +35,8 @@ paper-trading/
 │   │   └── pages/
 │   │       ├── Dashboard.jsx     # Portfolio summary + sortable positions table + inline Quick Trade
 │   │       ├── Transactions.jsx  # Transaction history with filters + CSV export
-│   │       ├── Performance.jsx   # Equity curve, daily returns, drawdown
+│   │       ├── Performance.jsx   # Equity curve (with benchmark overlay), daily returns, drawdown
+│   │       ├── Attribution.jsx   # Per-position $ and % contribution decomposition with period selector
 │   │       └── Analytics.jsx     # Sector pie, concentration bars, risk metrics
 │   ├── package.json
 │   ├── vite.config.js
@@ -58,6 +61,7 @@ paper-trading/
 - **FX conversion**: Non-USD tickers (e.g. Korean, Canadian) auto-convert to USD using yfinance forex rates. FX rate cached 5min. Trades execute at USD price. Quote display shows local currency + conversion rate.
 - **Margin model**: Reg T — 50% initial, 25% long maintenance, 30% short maintenance. Margin used only shown when actually borrowing (long positions exceed cash or have shorts). No buying power display.
 - **Auto-snapshots**: Snapshots save automatically on page load and after every trade (no manual button). Powers Performance tab.
+- **Historical backfill**: On Dashboard mount and Performance tab load, `POST /snapshots/:id/backfill` runs. It reconstructs end-of-day NAV for any trading day with no snapshot by replaying the transaction + cash log up to that date and looking up Yahoo's historical close (USD-converted via historical FX). After filling gaps it recomputes `daily_return` for the full series so prior gap-spanning values are corrected. This means the equity curve fills itself in even on days the user never opened the app — no cron needed.
 - **Inline trading**: Quick Trade form is on the Portfolio tab alongside positions (no separate Trade page). Click a position row to pre-fill the trade form with that ticker.
 - **Ticker search**: Debounced search-as-you-type using yfinance Search API. Shows dropdown with ticker, company name, exchange.
 - **Price refresh**: "Refresh Prices" button clears the 60s quote cache and re-fetches all prices.
@@ -69,11 +73,12 @@ paper-trading/
 - **State-based page navigation** (no react-router): Portfolio, Transactions, Performance, Analytics.
 - **Risk metrics**: Sharpe, Sortino, max drawdown, beta vs SPY, annualized volatility.
 
-## Pages (4 tabs)
+## Pages (5 tabs)
 1. **Portfolio** — NAV (full dollars), Day P&L, exposure stats with %, refresh button, deposit/withdraw, sortable positions table (click row to trade), inline Quick Trade form with ticker search
 2. **Transactions** — Full trade + cash history, filter tabs (All/Trades/Cash), CSV export button
-3. **Performance** — Equity curve (NAV vs deposits), daily returns bar chart, drawdown chart, summary stats
-4. **Analytics** — Sector exposure pie chart, top 10 concentration bars, risk metrics (Sharpe, Sortino, vol, drawdown, beta)
+3. **Performance** — Equity curve (NAV vs deposits) with up to 2 benchmark ticker overlays (e.g. SPY, QQQ), daily returns bar chart, drawdown chart, summary stats
+4. **Attribution** — Per-ticker decomposition of period P&L (`$` and `%` views), period selector (All/YTD/3M/1M/MTD/1W), horizontal bar chart + sortable detail table
+5. **Analytics** — Sector exposure pie chart, top 10 concentration bars, risk metrics (Sharpe, Sortino, vol, drawdown, beta)
 
 ## API Routes (all prefixed /api)
 - `GET /portfolios` — List all portfolios with live stats
@@ -91,11 +96,14 @@ paper-trading/
 - `GET /positions/:id` — Positions with live P&L
 - `GET /transactions/:id` — Trade + cash history
 - `POST /snapshots/:id/generate` — Generate/update today's snapshot
+- `POST /snapshots/:id/backfill` — Fill in missing historical snapshots from Yahoo close prices
 - `GET /snapshots/:id` — Snapshot history
 - `GET /performance/:id` — Computed return/drawdown stats
 - `GET /analytics/:id/sectors` — Sector exposure
 - `GET /analytics/:id/concentration` — Top position weights
 - `GET /analytics/:id/risk` — Sharpe, Sortino, vol, drawdown, beta
+- `GET /analytics/:id/attribution?period=all|ytd|3m|1m|mtd|1w` — Per-ticker $ P&L, contribution %, return %, avg weight
+- `GET /benchmark?ticker=&start=&end=` — Historical USD-converted close + cumulative return % for any ticker (for Performance overlay)
 
 ## Current Status
 Fully functional with all features implemented. Multi-portfolio with rename/reset/delete/reorder, inline trading with ticker search, FX conversion, auto-snapshots, daily P&L, sortable positions, CSV export, performance charts, and risk analytics.

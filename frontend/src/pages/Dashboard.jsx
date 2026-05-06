@@ -4,6 +4,7 @@ import {
   deposit,
   withdraw,
   generateSnapshot,
+  backfillSnapshots,
   getQuote,
   executeTrade,
   searchTicker,
@@ -660,7 +661,12 @@ export default function Dashboard({ portfolio, onUpdate }) {
 
   useEffect(() => {
     loadDashboard();
-    generateSnapshot(portfolio.id).catch(() => {});
+    // Backfill any missing historical days first, then write today's snapshot.
+    backfillSnapshots(portfolio.id)
+      .catch(() => {})
+      .finally(() => {
+        generateSnapshot(portfolio.id).catch(() => {});
+      });
   }, [portfolio]);
 
   const handleRefresh = async () => {

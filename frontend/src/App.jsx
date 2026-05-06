@@ -13,11 +13,13 @@ import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Performance from "./pages/Performance";
 import Analytics from "./pages/Analytics";
+import Attribution from "./pages/Attribution";
 
 const PAGES = [
   { id: "portfolio", label: "Portfolio" },
   { id: "transactions", label: "Transactions" },
   { id: "performance", label: "Performance" },
+  { id: "attribution", label: "Attribution" },
   { id: "analytics", label: "Analytics" },
 ];
 
@@ -529,6 +531,8 @@ export default function App() {
         return <Transactions portfolioId={pid} />;
       case "performance":
         return <Performance portfolioId={pid} />;
+      case "attribution":
+        return <Attribution portfolioId={pid} />;
       case "analytics":
         return <Analytics portfolioId={pid} />;
       default:
