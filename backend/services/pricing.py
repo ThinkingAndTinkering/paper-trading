@@ -27,6 +27,29 @@ INFO_TTL = 3600  # 1 hour
 FX_TTL = 300  # 5 minutes
 
 
+def _fx_from_ticker(fx_ticker: str) -> float:
+    """Try fast_info first, fall back to recent history close. Returns 0 if unavailable."""
+    try:
+        t = yf.Ticker(fx_ticker)
+        try:
+            fast = t.fast_info
+            rate = fast.get("lastPrice") or fast.get("last_price", 0)
+            if rate and rate > 0:
+                return float(rate)
+        except Exception:
+            pass
+        # Fallback: last close from recent history. fast_info returns {} for FX
+        # pairs in many yfinance/network environments — history() is more reliable.
+        hist = t.history(period="5d", auto_adjust=False)
+        if hist is not None and not hist.empty and "Close" in hist.columns:
+            close = hist["Close"].dropna()
+            if len(close):
+                return float(close.iloc[-1])
+    except Exception:
+        pass
+    return 0.0
+
+
 def _get_fx_rate(currency: str) -> float:
     """Get exchange rate from currency to USD. Returns multiplier."""
     if not currency or currency.upper() == "USD":
@@ -36,34 +59,26 @@ def _get_fx_rate(currency: str) -> float:
     now = time.time()
 
     cached = _fx_cache.get(currency)
-    if cached and (now - cached[1]) < FX_TTL:
+    # Don't trust cached 1.0 for non-USD currencies — that's the "all lookups
+    # failed" sentinel and we should try again rather than return it for 5min.
+    if cached and (now - cached[1]) < FX_TTL and cached[0] != 1.0:
         return cached[0]
 
-    try:
-        # yfinance forex ticker format: XXXUSD=X
-        fx_ticker = f"{currency}USD=X"
-        t = yf.Ticker(fx_ticker)
-        fast = t.fast_info
-        rate = fast.get("lastPrice") or fast.get("last_price", 0)
-        if rate and rate > 0:
-            _fx_cache[currency] = (rate, now)
-            return rate
-    except Exception:
-        pass
+    # Primary: XXXUSD=X (rate already in target form)
+    rate = _fx_from_ticker(f"{currency}USD=X")
+    if rate > 0:
+        _fx_cache[currency] = (rate, now)
+        return rate
 
-    # Fallback: try inverse
-    try:
-        fx_ticker = f"USD{currency}=X"
-        t = yf.Ticker(fx_ticker)
-        fast = t.fast_info
-        rate = fast.get("lastPrice") or fast.get("last_price", 0)
-        if rate and rate > 0:
-            inverse = 1.0 / rate
-            _fx_cache[currency] = (inverse, now)
-            return inverse
-    except Exception:
-        pass
+    # Fallback: USDXXX=X (invert)
+    inv = _fx_from_ticker(f"USD{currency}=X")
+    if inv > 0:
+        rate = 1.0 / inv
+        _fx_cache[currency] = (rate, now)
+        return rate
 
+    # All lookups failed — cache 1.0 briefly so we don't hammer Yahoo,
+    # but the next request after FX_TTL will retry.
     _fx_cache[currency] = (1.0, now)
     return 1.0
 
